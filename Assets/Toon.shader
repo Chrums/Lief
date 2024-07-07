@@ -14,11 +14,13 @@ Shader "Fizz6/Toon"
     */
     Properties
     {
-        [MainTexture] _ColorMap ("Color Map", 2D) = "white" {}
+        [MainTexture] _MainTex ("Main Texture", 2D) = "white" {}
         [MainColor] _Color ("Color", Color) = (1.0, 1.0, 1.0)
         _Buckets ("Buckets", Int) = 3
         _Roughness ("Roughness", Float) = 16.0
         _Ambient ("Ambient", Color) = (1.0, 1.0, 1.0)
+        _OutlineWeight ("Outline Weight", Float) = 4.0
+        _OutlineColor ("Outline Color", Color) = (0.0, 0.0, 0.0)
     }
 
 
@@ -40,9 +42,9 @@ Shader "Fizz6/Toon"
 
         Tags
         {
-            "RenderType"="Opaque" "RenderPipeline"="UniversalPipeline"
+            "RenderType" = "Opaque"
+            "RenderPipeline" = "UniversalPipeline"
         }
-
 
         /*
         These are Shader Commands that control 
@@ -158,5 +160,63 @@ Shader "Fizz6/Toon"
             #include "Toon.hlsl"
             ENDHLSL
         }
+
+        Pass
+        {            
+            Tags
+            {
+                "RenderType" = "Opaque"
+                "RenderPipeline" = "UniversalPipeline"
+            }
+            
+            Cull Front
+            
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+         
+            #include "Outline.hlsl"
+            ENDCG
+        }
+
+//        Pass
+//        {            
+//            Tags
+//            {
+//                "RenderType" = "Opaque"
+//                "RenderPipeline" = "UniversalPipeline"
+//            }
+//            
+//            Cull Front
+//            
+//            CGPROGRAM
+//            #pragma vertex vert
+//            #pragma fragment frag
+//            #include "UnityCG.cginc"
+//
+//            uniform fixed4 _OutlineColor;
+//            uniform fixed4 _OutlineWeight;
+//         
+//            struct v2f {
+//                float4 vertex : SV_POSITION;
+//            };
+//            
+//            v2f vert (appdata_base v)
+//            {
+//                v2f o;
+//                float3 vertex = v.vertex;
+//                vertex += v.normal * _OutlineWeight;
+//                // float3 position = v.vertex.xyz + v.normal * _OutlineWeight;
+//                o.vertex = UnityObjectToClipPos(vertex);
+//                return o;
+//            }
+//
+//            fixed4 frag (v2f i) : SV_Target
+//            {
+//                return fixed4(0, 0, 0, 1);
+//            }
+//            
+//            ENDCG
+//        }
     }
 }
